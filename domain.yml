@@ -1,0 +1,82 @@
+slots:
+  rand:
+    type: text
+  whatooo:
+    type: text
+
+intents:
+  - greet
+  - lets_play:
+      triggers: action_game_start
+  - ask_hint:
+      triggers: action_hint
+  - guess:
+      triggers: action_evaluate
+  - ask_rules
+  - affirm:
+      triggers: action_game_start
+  - deny
+  - milk:
+      triggers: action_evaluate
+  - mittens:
+      triggers: action_evaluate
+  - police station:
+      triggers: action_evaluate
+  - ostrich:
+      triggers: action_evaluate
+  - bicycle:
+      triggers: action_evaluate
+  - low:
+      triggers: action_evaluate
+  - dough:
+      triggers: action_evaluate
+  - wrong_milk:
+      triggers: action_evaluate
+  - wrong_mittens:
+      triggers: action_evaluate
+  - wrong_police:
+      triggers: action_evaluate
+  - wrong_ostrich:
+      triggers: action_evaluate
+  - wrong_bicycle:
+      triggers: action_evaluate
+  - wrong_low:
+      triggers: action_evaluate
+  - wrong_dough:
+      triggers: action_evaluate  
+  - ask_repeat:
+      triggers: action_repeat
+  - give_up:
+      triggers: action_explain
+
+actions:
+- utter_rules
+- utter_bye
+- utter_default
+- utter_greet
+
+- action_game_start
+- action_hint
+- action_evaluate
+- action_repeat
+- action_explain
+
+templates:
+  
+  utter_rules:
+  - text: |
+      I will give you four words, and you must guess which one does not belong with the others.
+      Start playing by saying "let's play". You can also ask me for a hint if you can't figure it out.
+
+  utter_bye: 
+  - text: "Oki, bye!"
+  
+  utter_default:
+  - text: "I don't understand. Make sure your spelling isn't garbage."
+  
+  utter_greet:
+  - text: "Hi! Let's play Odd one out. If you would like to know the rules, just say so. Otherwise say 'play' and we can start!"
+
+session_config:
+  session_expiration_time: 5
+  carry_over_slots_to_new_session: false
