@@ -3,6 +3,8 @@ slots:
     type: text
   whatooo:
     type: text
+  OOO_list:
+    type: text
 
 intents:
   - greet

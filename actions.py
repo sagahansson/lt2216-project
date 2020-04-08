@@ -4,10 +4,10 @@ from rasa_sdk.executor import CollectingDispatcher
 from rasa_sdk.events import SlotSet, AllSlotsReset
 import random
 
-OOO_list = [("Cheese, milk, butter, yoghurt.", 
-             "milk", 
-             "All the others are made FROM milk.", 
-             "Think about how the items are produced."),
+OOO_list = [("Cheese, milk, butter, yoghurt.", # the question that the system asks
+             "milk", # correct answer
+             "All the others are made FROM milk.", # explanation 
+             "Think about how the items are produced."), # hint
            ("Airplane, raven, ostrich, hot air balloon.", 
             "ostrich", 
             "Ostrich is the only one that doesn't fly.", 
@@ -47,13 +47,51 @@ class ActionGameStart(Action):
         former_rand = tracker.get_slot("rand") 
         former_ooo = tracker.get_slot("whatooo")
         
-        if type(former_ooo) == list:
-            if tuple(former_ooo) in OOO_list:
-                OOO_list.remove(tuple(former_ooo))
-        if len(OOO_list) == 0:
-            dispatcher.utter_message(text="Unfortunately I've run out of questions. Goodbye!")
-            return []
+        if (tracker.get_slot("OOO_list")) != None:
+            OOO_list = tracker.get_slot("OOO_list")                           
+            
+            if former_ooo in OOO_list:
+                OOO_list.remove(former_ooo)
+                if len(OOO_list) != 0:
+                    rand = random.choice(range(len(OOO_list)))
+                    whatooo = OOO_list[rand]
+                    setup_q = "Which one is the odd one out? "
+                    dispatcher.utter_message(text=setup_q + (whatooo[0]))
+
+                    return [SlotSet("rand", rand), SlotSet("whatooo", whatooo), SlotSet("OOO_list", OOO_list)]
+        
+                else:
+                    dispatcher.utter_message(text="Unfortunately I've run out of questions. Goodbye!")
+                    return []
         else:
+            OOO_list = [("Cheese, milk, butter, yoghurt.", # the question that the system asks
+             "milk", # correct answer
+             "All the others are made FROM milk.", # explanation 
+             "Think about how the items are produced."), # hint
+           ("Airplane, raven, ostrich, hot air balloon.", 
+            "ostrich", 
+            "Ostrich is the only one that doesn't fly.", 
+            "Think about the means of transportation."),
+           ("Socks, boots, mittens, slippers", 
+            "mittens", 
+            "Mittens are worn on your hands, while all the others are worn on your feet.", 
+            "Think about what they make warm."),
+           ("Optician, police station, post office, pharmacy", 
+            "police station", 
+            "Police stations don't sell things, while the other places do.", 
+            "Think about what you'd do in the different places."),
+           ("Bus, lorry, bicycle, car", 
+            "bicycle", 
+            "A bicycle is moved by foot pedals, all the others are motorised.", 
+            "Think about what makes them move."),
+           ("Now, low, cow, vow", 
+            "low", 
+            "In 'low', -ow is pronounced differently from how it's pronouned in the rest.", 
+            "Say them out loud."),
+           ("Tough, puff, dough, enough", 
+            "dough", 
+            "Dough is the only one with the /oʊ/ sound, all the others have a /ʌf/ sound.", 
+            "Try pronouncing them.")]
 
             setup_q = "Which one is the odd one out? "
             rand = random.choice(range(len(OOO_list)))
@@ -61,7 +99,9 @@ class ActionGameStart(Action):
             
             dispatcher.utter_message(text=setup_q + (whatooo[0]))
             
-            return [SlotSet("rand", rand), SlotSet("whatooo", whatooo)]
+            return [SlotSet("rand", rand), SlotSet("whatooo", whatooo), SlotSet("OOO_list", OOO_list)]
+
+
 
 class ActionEvaluate(Action):
 
@@ -75,6 +115,8 @@ class ActionEvaluate(Action):
         #usermessageanswer = (tracker.latest_message['text']).lower()
         user_intent = tracker.latest_message['intent']['name']
         whatooo = tuple(tracker.get_slot("whatooo")) 
+        
+        print(tracker.latest_message)
         
         print(tracker.latest_message['text'])
         #print("latest message: ",tracker.latest_message)
@@ -140,3 +182,9 @@ class ActionExplain(Action):
         dispatcher.utter_message(text=setup_s + whatooo[1] + ". " + whatooo[2] + "\n" + another_q)
 
         return []
+    
+
+
+
+            
+    
